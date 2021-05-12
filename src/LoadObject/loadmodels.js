@@ -3,9 +3,10 @@ import *as THREE from '../../node_modules/three/build/three.module.js';
 import load_Mgr from './loadMgr.js';
 import { _TJS, _Global } from '../Myjs/global.js';
 import { FBXLoader } from '../../node_modules/three/examples/jsm/loaders/FBXLoader.js';
-import { group } from '../Myjs/VRGUI.js';
+import { group, objects } from '../Myjs/VRGUI.js';
 import { clonemod } from '../Myjs/clonemod.js';
 import { T1_4pos, M3_3pos, M1_4pos, TC500pos, VMC850pos } from '../Myjs/modelpos_rot.js';
+
 
 // import '../examples/js/libs/fflate.min.js';
 
@@ -69,35 +70,97 @@ _Global.grass = function () {
 
 ///////////////////////厂房模型//////////////////////////////////////
 _Global.CF = function () {
-    let CF_mat = new THREE.MeshStandardMaterial({
-        color: "#008040",
+
+    let roof_tex = textureloader.load('./src/resources/textures/CF/GL_HYTJD.jpg', function (map) {
+        map.wrapS = map.wrapT = THREE.RepeatWrapping;
+        map.repeat.set(20, 40);
+    });
+
+
+    let neiqiang_tex = textureloader.load('./src/resources/textures/CF/gggg.png', function (map) {
+        map.wrapS = map.wrapT = THREE.RepeatWrapping;
+        map.repeat.set(40, 40);
+    });
+
+
+    let qiang_tex1 = textureloader.load('./src/resources/textures/CF/gggg.png', function (map) {
+        map.wrapS = map.wrapT = THREE.RepeatWrapping;
+        map.repeat.set(40, 40);
+    });
+
+    let qiang_tex2 = textureloader.load('./src/resources/textures/CF/qiangmian.jpg', function (map) {
+        map.wrapS = map.wrapT = THREE.RepeatWrapping;
+        map.repeat.set(20, 40);
+    });
+
+
+
+    let qiang_nor2 = textureloader.load('./src/resources/textures/CF/qiangmiannor.png', function (map) {
+        map.wrapS = map.wrapT = THREE.RepeatWrapping;
+        map.repeat.set(20, 40);
+    });
+
+    let door_tex2 = textureloader.load('./src/resources/textures/CF/KBS.png');
+
+
+
+
+
+    let roof_mat = new THREE.MeshStandardMaterial({
+        color: "#0080c0",
+        normalMap: roof_tex,
         side: THREE.DoubleSide,
         metalness: 0.0,
         roughness: 0.5,
     })
-    let CFdoor_mat = new THREE.MeshStandardMaterial({
-        color: "#004080",
+    let qiang_mat = new THREE.MeshStandardMaterial({
+        // color: "#0080c0",
+        map: qiang_tex1,
+        // normalMap: qiang_nor1,
         side: THREE.DoubleSide,
-        // transparent: true,
-        // opacity: 0.4,
         metalness: 0.0,
         roughness: 0.5,
     })
-    let Boliqiang_mat = new THREE.MeshStandardMaterial({
-        color: "#0080c0",
+
+    let qiang_mat1 = new THREE.MeshStandardMaterial({
+        // color: "#0080c0",
+        map: qiang_tex2,
+        normalMap: qiang_nor2,
         side: THREE.DoubleSide,
-        // transparent: true,
-        // opacity: 0.6,
         metalness: 0.0,
-        roughness: 0.4
+        roughness: 0.5,
     })
-    let touming = new THREE.MeshStandardMaterial({
-        color: "#0080c0",
+
+    let door_mat = new THREE.MeshStandardMaterial({
+        color: "#c0c0c0",
+        // map: door_tex2,
+        // normalMap: roof_tex,
         side: THREE.DoubleSide,
+        metalness: 0.2,
+        roughness: 0.5,
+    })
+
+
+
+    let neiqiang_mat = new THREE.MeshStandardMaterial({
+        // color: "#0080c0",
+        map: neiqiang_tex,
+        // normalMap: roof_tex,
+        side: THREE.DoubleSide,
+        metalness: 0.0,
+        roughness: 0.5,
+    })
+
+
+    let Boli_mat = new THREE.MeshStandardMaterial({
+        color: "#0080c0",
+        // map: door_tex2,
+        // normalMap: roof_tex,
         transparent: true,
-        opacity: 0,
+        opacity: 0.4,
+        side: THREE.DoubleSide,
         metalness: 0.0,
-        roughness: 0.4
+        roughness: 0.5,
     })
 
 
@@ -106,19 +169,30 @@ _Global.CF = function () {
         object.traverse(function (child) {
             if (child.isMesh) {
                 if (child.name.indexOf("door") > -1) {
-                    child.material = CFdoor_mat;
-
+                    // child.material = CFdoor_mat;
+                    child.material = door_mat;
                     // child.material=Boli_mat;
                 }
-                else if (child.name.indexOf("qiang") > -1) {
-                    child.material = Boliqiang_mat;
+                else if (child.name == "qiang7" || child.name == "qiang6") {
+                    child.material[1] = qiang_mat;
+                    child.material[0] = qiang_mat1;
+                }
+                else if (child.name == "qiang" || child.name == "qiang5") {
+                    child.material[0] = qiang_mat;
+                    child.material[1] = qiang_mat1;
+                }
+                else if (child.name == "ss8" || child.name == "ss9") {
+                    child.material = qiang_mat;
                 }
                 else if (child.name == "ss4") {
-                    child.material = touming;
-                    console.log(child, "顶");
+                    child.material = roof_mat;
+                    // console.log(child, "顶");
+                }
+                else if (child.name == "Boli") {
+                    child.material = Boli_mat;
                 }
                 else {
-                    child.material = CF_mat;
+                    child.material = neiqiang_mat;
                 }
 
 
@@ -141,22 +215,91 @@ _Global.CF = function () {
 _Global.plane = function () {
     let mat = new THREE.MeshStandardMaterial({
 
-        color: "#804040",
-        // side: THREE.DoubleSide,
+        color: "#afafaf",
+        map: textureloader.load('./src/resources/textures/DM/地面.jpg', function (map) {
+            map.wrapS = map.wrapT = map.RepeatWrapping;
+            map.repeat.set(40, 40);
+        }),
+        side: THREE.DoubleSide,
         metalness: 0,
-        roughness: 0.4,
+        roughness: 0.6,
     })
+
+
+
+
+
+    let mat1 = new THREE.MeshStandardMaterial({
+
+        color: "#008040",
+        // normalMap: qiang_nor1,
+        map: textureloader.load('./src/resources/textures/DM/地面2.jpg', function (map) {
+            map.wrapS = map.wrapT = map.RepeatWrapping;
+            map.repeat.set(40, 40);
+        }),
+        side: THREE.DoubleSide,
+        metalness: 0,
+        roughness: 0.6,
+    })
+
+
+    let mat2 = new THREE.MeshStandardMaterial({
+
+        color: "#ff8040",
+        // normalMap: qiang_nor1,
+        map: textureloader.load('./src/resources/textures/DM/地面2.jpg', function (map) {
+            map.wrapS = map.wrapT = map.RepeatWrapping;
+            map.repeat.set(40, 40);
+        }),
+        side: THREE.DoubleSide,
+        metalness: 0,
+        roughness: 0.6,
+    })
+    let mat3 = new THREE.MeshStandardMaterial({
+
+        color: "#804000",
+        // normalMap: qiang_nor1,
+        map: textureloader.load('./src/resources/textures/DM/地面2.jpg', function (map) {
+            map.wrapS = map.wrapT = map.RepeatWrapping;
+            map.repeat.set(40, 40);
+        }),
+        side: THREE.DoubleSide,
+        metalness: 0,
+        roughness: 0.6,
+    })
+
+    let mat4 = new THREE.MeshStandardMaterial({
+
+        color: "#0080c0",
+        // normalMap: qiang_nor1,
+        map: textureloader.load('./src/resources/textures/DM/地面2.jpg', function (map) {
+            map.wrapS = map.wrapT = map.RepeatWrapping;
+            map.repeat.set(40, 40);
+        }),
+        side: THREE.DoubleSide,
+        metalness: 0,
+        roughness: 0.6,
+    })
+
+
+
 
 
     loader.load('./src/resources/models/DM.fbx', function (object) {
         object.traverse(function (child) {
             if (child.isMesh) {
-                child.material = mat;
+                // child.material = mat;
+                child.material[1] = mat;
+                child.material[0] = mat3;
+                child.material[2] = mat2;
+                child.material[3] = mat4;
+                child.material[4] = mat1;
             }
         })
         object.castShadow = modelcastshadow;
         object.receiveShadow = modelreceiveshadow;
         _TJS.scene.add(object);
+        console.log(object, "地面");
 
     })
     load_Mgr.loaded();
@@ -222,10 +365,25 @@ _Global.GC_light = function () {
 }
 /////////////////////垃圾处理、危险品处理////////////////////
 _Global.LJCL = function () {
+
+
+    let las_tex = textureloader.load('./src/resources/textures/CF/gggg.png', function (map) {
+        map.wrapS = map.wrapT = THREE.RepeatWrapping;
+        map.repeat.set(40, 40);
+    });
+
+    let mat = new THREE.MeshStandardMaterial({
+        // color: "#00ffff",
+        map: las_tex,
+        side: THREE.DoubleSide,
+        metalness: 0.1,
+        roughness: 0.5
+    })
+
     loader.load('./src/resources/models/CLJ.fbx', function (object) {
         object.traverse(function (child) {
             if (child.isMesh) {
-
+                child.material = mat;
             }
         })
         _TJS.scene.add(object);
@@ -240,34 +398,63 @@ _Global.LJCL = function () {
 
 _Global.load_M8 = function () {
     // console.log("ssssd");
-    loader.load('./src/resources/models/show/',
+
+    let baimeta = new THREE.MeshStandardMaterial({
+        color: "#fff",
+        side: THREE.DoubleSide,
+        metalness: 0.3,
+        roughness: 0.4
+    })
+    let huimeta = new THREE.MeshStandardMaterial({
+        color: "#565656",
+        side: THREE.DoubleSide,
+        metalness: 0.3,
+        roughness: 0.4
+    })
+
+
+    let heimeta = new THREE.MeshStandardMaterial({
+        color: "#000000",
+        side: THREE.DoubleSide,
+        metalness: 0.3,
+        roughness: 0.4
+    })
+
+
+    loader.load('./src/resources/models/robotman.fbx',
         function (object) {
+            // console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
 
             object.traverse(function (child) {
                 if (child.isMesh) {
                     child.catch = true;
-                    var geometry = child.geometry;
-                    geometry.addAttribute('uv2', new THREE.BufferAttribute(geometry.attributes.uv.array, 2));
+                    // var geometry = child.geometry;
+                    // geometry.addAttribute('uv2', new THREE.BufferAttribute(geometry.attributes.uv.array, 2));
+
+                    group.children.push(child);
+                    if (child.name == "toe") {
+                        child.material[0] = huimeta;
+                        child.material[1] = heimeta;
+                    } else {
+                        child.material = baimeta;
+                    }
 
                 }
-                // child.scale.set(0.05, 0.05, 0.05);
-                group.children.push(child);
-
-            });
+            })
 
             _TJS.scene.add(object);
             // group.add(object);
-            object.position.set(-3.605, 0, -78.562);
+            object.position.set(-6.037, 5.98, -35.181);
 
             _Global.M8JT = object;
 
             let M8mod = object.clone();
-            M8mod.position.set(0, 0, 0);
+            M8mod.position.set(-1.274, 5.98, 46.255);
             _TJS.scene.add(M8mod);
             // _Global.M8mod = object;
             object.castShadow = true;
             object.receiveShadow = true;
-            console.log(object.position, "xingxinghxinh");
+            // console.log(object.position, "xingxinghxinh");
 
         })
 
@@ -353,7 +540,7 @@ _Global.load_M1_4 = function () {
             }
         })
         _TJS.scene.add(object);
-        console.log(object, "小汽车");
+        // console.log(object, "小汽车");
         object.castShadow = modelcastshadow;
         object.receiveShadow = modelreceiveshadow;
         clonemod(M1_4pos, object);
@@ -510,7 +697,7 @@ _Global.load_TC500 = function () {
             }
         })
         _TJS.scene.add(object);
-        console.log(object, "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM");
+        // console.log(object, "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM");
         object.castShadow = modelcastshadow;
         object.receiveShadow = modelreceiveshadow;
         clonemod(TC500pos, object);
@@ -612,10 +799,65 @@ _Global.load_VMC850 = function () {
 
 //////////////////////////////加载救援机器人//////////////////////////////////
 _Global.SaveMod119 = function () {
+    let n_mat1 = new THREE.MeshStandardMaterial({
+        color: "#2f8059",
+        side: THREE.DoubleSide,
+        metalness: 0.0,
+        roughness: 0.4
+
+    })
+
+    let n_mat2 = new THREE.MeshStandardMaterial({
+        color: "#000000",
+        side: THREE.DoubleSide,
+        metalness: 0.0,
+        roughness: 0.4
+
+    })
+
+
+    let n_mat3 = new THREE.MeshStandardMaterial({
+        color: "#c5c5c5",
+        side: THREE.DoubleSide,
+        metalness: 0.0,
+        roughness: 0.4
+
+    })
+    let n_mat4 = new THREE.MeshStandardMaterial({
+        color: "#fff",
+        side: THREE.DoubleSide,
+        metalness: 0.3,
+        roughness: 0.4
+
+    })
+
+    let n_mat5 = new THREE.MeshStandardMaterial({
+        color: "#fff",
+        transparent: true,
+        opacity: 0,
+        side: THREE.DoubleSide,
+        metalness: 0.3,
+        roughness: 0.4
+
+    })
+
     loader.load('./src/resources/models/Robot119.fbx', function (object) {
         object.traverse(function (child) {
             if (child.isMesh) {
-
+                if (child.name == "wheel1" || child.name == "wheel2") {
+                    child.material = n_mat2;
+                }
+                else if (child.name == "TZ") {
+                    child.material = n_mat1;
+                }
+                else if (child.name == "leg" || child.material == "raw") {
+                    child.material = n_mat3;
+                }
+                else if (child.name == "rawg" || child.name == "legg") {
+                    child.material = n_mat4;
+                } else if (child.name == "qiu") {
+                    child.material = n_mat5;
+                }
             }
         })
         _TJS.scene.add(object);
@@ -660,46 +902,51 @@ _Global.MQG = function () {
 
 /////////////////////////////////////加载看板///////////////////////
 
-_Global.introduceKB = function () {
+// _Global.introduceKB = function () {
 
 
-    let mat1 = new THREE.MeshStandardMaterial({
-        // color: "#0080ff",
-        map: new THREE.TextureLoader().load('./src/resources/textures/KB/KBS.png'),
-        side: THREE.DoubleSide,
-        transparent: true,
-        metalness: 0.3,
-        roughness: 0.4
-    })
+//     let mat1 = new THREE.MeshStandardMaterial({
+//         // color: "#0080ff",
+//         map: new THREE.TextureLoader().load('./src/resources/textures/KB/KBS.png'),
+//         side: THREE.DoubleSide,
+//         transparent: true,
+//         metalness: 0.3,
+//         roughness: 0.4
+//     })
+// KBcreate();
 
+//     let KBGeo = new THREE.PlaneGeometry(10, 10, 1);
+//     let KB = new THREE.Mesh(KBGeo, mat1);
 
-    loader.load('./src/resources/models/KB.fbx', function (object) {
-        object.traverse(function (child) {
-            if (child.isMesh) {
-                if (child.name == "M3_3KB") {
-                    // KBcreate(child, M3_3pos);
-                    child.material = mat1;
-                } else if (child.name == "TC700KB") {
-                    child.material = mat1;
-                } else if (child.name == "M8KB") {
-                    child.material = mat1;
-                } else if (child.name == "VMC850KB") {
-                    child.material = mat1;
-                } else if (child.name == "M1_4KB") {
-                    child.material = mat1;
-                } else if (child.name == "T1_4KB") {
-                    child.material = mat1;
-                }
+//     // loader.load('./src/resources/models/KB.fbx', function (object) {
+//     //     object.traverse(function (child) {
+//     //         if (child.isMesh) {
+//     //             if (child.name == "M3_3KB") {
+//     //                 // KBcreate(child, M3_3pos);
+//     //                 child.material = mat1;
+//     //             } else if (child.name == "TC700KB") {
+//     //                 child.material = mat1;
+//     //             } else if (child.name == "M8KB") {
+//     //                 child.material = mat1;
+//     //             } else if (child.name == "VMC850KB") {
+//     //                 child.material = mat1;
+//     //             } else if (child.name == "M1_4KB") {
+//     //                 child.material = mat1;
+//     //             } else if (child.name == "T1_4KB") {
+//     //                 child.material = mat1;
+//     //             }
 
-            }
-        })
-        _TJS.scene.add(object);
-        console.log(object, "kanban");
-        _Global.zhanban = object;
+//     //         }
+//     //     })
+//     // _TJS.scene.add(object);
+//     console.log(_TJS,"站台。。。。。。。。。。。。。。。。。。。。。。。。。。。。");
+//     // _TJS.scene.add(KB);
+//     // console.log(object, "kanban");
+//     // _Global.zhanban = object;
 
-    })
-    load_Mgr.loaded();
-}
+//     // })
+//     load_Mgr.loaded();
+// }
 
 ////////////////////////////加载起飞台//////////////
 _Global.Qifei = function () {
@@ -733,3 +980,101 @@ _Global.Qifei = function () {
     })
     load_Mgr.loaded();
 }
+
+
+_Global.Zhisheng = function () {
+
+    let mat1 = new THREE.MeshStandardMaterial({
+        // color:"#00ffff",
+        map: textureloader.load('./src/resources/textures/airplanetexture/AS360_Diffuse_Map.png'),
+        aoMap: textureloader.load('./src/resources/textures/airplanetexture/AS360_Bump_Map.jpg'),
+        side: THREE.DoubleSide,
+        transparent: true,
+        // opacity: 0,
+        roughness: 0.4,
+        metalness: 0.2
+    })
+
+    let light_mat = new THREE.MeshStandardMaterial({
+        color: "#c6c6c6",
+        // map: textureloader.load('./src/resources/textures/airplanetexture/AS360_Diffuse_Map.jpg'),
+        // aoMap: textureloader.load('./src/resources/textures/airplanetexture/AS360_Bump_Map.jpg'),
+        side: THREE.DoubleSide,
+        transparent: true,
+        roughness: 0.4,
+        metalness: 0.2
+    })
+
+
+
+    loader.load('./src/resources/models/show/airplanes.fbx', function (object) {
+        object.traverse(function (child) {
+            if (child.isMesh) {
+                var geometry = child.geometry;
+                geometry.addAttribute('uv2', new THREE.BufferAttribute(geometry.attributes.uv.array, 2));
+                if (child.name == "Light") {
+                    child.material = light_mat;
+                }
+                else if (child.name == "Mesh07" || child.name.indexOf("Gear") > -1) {
+
+                }
+                else {
+                    child.material = mat1;
+
+                }
+
+
+            }
+        })
+        _TJS.scene.add(object);
+
+        // _Global.airplanes = object;
+        _Global.mixer = new THREE.AnimationMixer(object);
+        _Global.clips = object.animations;
+        let clip = object.animations[0];
+        _Global.action = _Global.mixer.clipAction(clip);
+
+
+
+        // clips.forEach(function (clip) {
+        //     _Global.mixer.clipAction(clip).play();
+        // })
+        console.log(object, "///////////////////////////////////////////////////////////////");
+
+    })
+    load_Mgr.loaded();
+}
+
+
+
+// _Global.house = function () {
+
+//     let tex1 = textureloader.load('./src/resources/textures/house/tex_Bark.jpg');
+//     // let tex1 = textureloader.load('./src/resources/textures/house/tex_Bark.jpg');
+//     let tex2 = textureloader.load('./src/resources/textures/housetex_Foliage_op.jpg');
+//     let tex3 = textureloader.load('./src/resources/textures/house/tex_Folliage.jpg');
+//     let tex4 = textureloader.load('./src/resources/textures/house/tex_GrassFloor.jpg');
+//     let tex5 = textureloader.load('./src/resources/textures/house/tex_PolesRoofBranches.jpg');
+//     let tex6 = textureloader.load('./src/resources/textures/house/tex_PolesRoofBranches_Op.jpg');
+//     let tex7 = textureloader.load('./src/resources/textures/house/tex_RoofTiles.jpg');
+//     let tex8 = textureloader.load('./src/resources/textures/house/tex_Stones.jpg');
+//     let tex9 = textureloader.load('./src/resources/textures/house/tex_StonseWall.jpg');
+//     let tex10 = textureloader.load('./src/resources/textures/house/tex_Wood.jpg');
+
+
+
+//     loader.load('./src/resources/models/show/house.fbx', function (object) {
+//         object.traverse(function (child) {
+//             if (child.isMesh) {
+//                 if (child.name == "baseFBXASC032tower"){
+
+//                 }
+//             }
+//         })
+//     })
+
+
+
+
+
+// }

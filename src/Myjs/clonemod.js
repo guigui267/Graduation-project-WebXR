@@ -4,12 +4,14 @@ import { _TJS } from "./global.js";
 
 
 
-function clonemod(pos, mod) {
+function clonemod(pos, mod, ys = 0, m=null) {
     for (let i = 0; i < pos.length; i++) {
         let mod1 = mod.clone();
-        mod1.position.set(pos[i].x, pos[i].y, pos[i].z);
+        mod1.position.set(pos[i].x, pos[i].y + ys, pos[i].z);
         mod1.rotation.y = pos[i].r;
         _TJS.scene.add(mod1);
+
+        if (m) mod1.name = m + i;
         // Scene.add(mod1)
     }
 }

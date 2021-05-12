@@ -1,5 +1,5 @@
 import { _TJS, _Global } from '../Myjs/global.js';
-import '../LoadObject/loadmodels.js'
+import './loadmodels.js'
 
 var load_Mgr = {
     modelList: [],//模型对象列表
@@ -20,7 +20,7 @@ var load_Mgr = {
         // this.AddModel(_Global.GC_light);//加载工厂灯
         this.AddModel(_Global.LJCL);//垃圾、危险品处理机
         ////////////////////加载设备///////////////////////////////
-        // this.AddModel(_Global.load_M8);
+        this.AddModel(_Global.load_M8);
 
         this.AddModel(_Global.load_M1_4);//M1.4
         this.AddModel(_Global.load_M3_3);//M3.3
@@ -31,8 +31,9 @@ var load_Mgr = {
 
         this.AddModel(_Global.SaveMod119);//救援模型机器人
         this.AddModel(_Global.MQG);//煤气罐
-        this.AddModel(_Global.introduceKB);
+        // this.AddModel(_Global.introduceKB);
         this.AddModel(_Global.Qifei);
+        this.AddModel(_Global.Zhisheng);//直升机
 
 
         // this.AddModel(_Global.Mod8_scene2);//场景2M8模型的复制操作

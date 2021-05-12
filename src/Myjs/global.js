@@ -27,7 +27,19 @@ export var _Global = {
     dollyMod: null,
     zhanban: null,
     opendoor: null,
+    // airplanes: null,
+    mixer: null,
+    clips: null,
+    flyyer: null,
+    neirong: null,
+    buttondown: null,
+    movestart: null,
+
+    canvased: null,
+    canvased1: null,
+    kanbanmap: null,
     // linectro:null,
+    robotKB_mat: null,
 }
 console.log("全局变量读取。。。");
 

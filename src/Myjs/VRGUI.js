@@ -39,15 +39,10 @@ var XRcontrol = function () {
     controllerL = _TJS.renderer.xr.getController(0);
     controllerL.addEventListener('selectstart', onSelectStart);
     controllerL.addEventListener('selectend', onSelectEnd);
-    // controllerL.addEventListener('connected', function (event) {
-    //     this.add(buildController(event.data));
-    // });//选中控件添加功能
-    // controllerL.addEventListener('disconnected', function () {
-    //     this.remove(this.children[0]);
-    // });//松开控件
 
-    // _TJS.scene.add(controllerL);
-    // controllerL.position.set(100, 184, 208);
+
+
+
     //////////////////////////////////////////右手控制器添加//////////////////////////////
     controllerR = _TJS.renderer.xr.getController(1);
     controllerR.addEventListener('selectstart', onSelectStart);
@@ -63,7 +58,7 @@ var XRcontrol = function () {
     controllerLGrip = _TJS.renderer.xr.getControllerGrip(0);
     controllerLGrip.add(controllerModelFactory.createControllerModel(controllerLGrip));
     // _TJS.scene.add(controllerLGrip);
-    console.log(controllerLGrip, "左手握持器");
+    // console.log(controllerLGrip, "左手握持器");
     // controllerLGrip.position.set(100, 184, 208);
 
 
@@ -159,6 +154,8 @@ function onSelectStart(event) {
         const object = intersection.object;
         object.material.emissive.r = 1;
         Move();
+
+
         // object.material.wireframe = true;
         // console.log(object, "模型s");
         // if (_Global.sceneChangeNum == "scene") {

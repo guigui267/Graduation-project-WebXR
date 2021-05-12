@@ -35,19 +35,24 @@ function renderSC() {
     /////////////////手柄///////////////////////
     // if()
     // XRline();
-
-
+    if (_Global.kanbanmap) _Global.kanbanmap.map.needsUpdate = true;
+    if (_Global.robotKB) _Global.robotKB.material.map.needsUpdate = true;
     // requestAnimationFrame(animate);
     // _TJS.renderer.setAnimationLoop(function(){
     //     _TJS.renderer.render(_TJS.scene,_TJS.camera);
     // })
     if (_Global.enterVR == 0) {
-
+        // _Global.KZTtz.children[7].material.needsUpdate = true;
         // if (_Global.sceneChangeNum == "scene") {
         _TJS.renderer.render(_TJS.scene, _TJS.camera);//执行渲染操作(不加后期通道)
+        _TJS.scene.traverse(s => {
+            if (s.name.indexOf("choosecamera") > -1) {
+                s.lookAt(_TJS.camera.position);
+            }
+        })
         // }
         // _Global.zhanban.lookAt(_TJS.camera.position);
-     
+
         // else if (_Global.sceneChangeNum == "scene2") {
         //     _TJS.renderer.render(_TJS.scene2, _TJS.camera);//执行渲染操作(不加后期通道)
         // }
@@ -56,12 +61,18 @@ function renderSC() {
         // _TJS.renderer.render(_TJS.scene, _TJS.VRcamera);
         // if (_Global.sceneChangeNum == "scene") {
         _TJS.renderer.render(_TJS.scene, _TJS.VRcamera);
+        _TJS.scene.traverse(s => {
+            if (s.name.indexOf("choosecamera") > -1) {
+                s.lookAt(_Global.dollyMod.position);
+            }
+        })
 
 
         // }
 
     }
     TWEEN.update();
+    _Global.mixer.update(delta);
     // requestAnimationFrame(renderSC);
     // console.log(_TJS.scene.children);
     // renderer.setViewport();

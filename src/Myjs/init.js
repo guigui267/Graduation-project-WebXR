@@ -2,16 +2,21 @@ import *as THREE from '../../node_modules/three/build/three.module.js';
 import Stats from '../../node_modules/three/examples/jsm/libs/stats.module.js';
 import { OrbitControls } from '../../node_modules/three/examples/jsm/controls/OrbitControls.js';
 import { _TJS, _Global } from './global.js';
-import { VRButton } from '../../node_modules/three/examples/jsm/webxr/VRButton.js';
+import { VRButton } from './VRButton.js';
 import event_Mg from './eventMgr.js';
 import { XRcontrol } from './VRGUI.js';
 // import { Scene2, scene2light, ChooseScene } from './scene2.js';
 import { JTSG } from './M8JT.js';
+import { KBcreate } from './introducePlane.js';
+import { robotplane } from './robotMove.js';
 
 // var project = new THREE.Projector();
 function init() {
 
+
+
     initStats();
+
 
     initRender();
 
@@ -20,7 +25,7 @@ function init() {
     initScene();
     // ChooseScene();
     // Scene2();
-
+    mixer();
     Camera();
     // VRcamera();
     JTSG();
@@ -28,9 +33,11 @@ function init() {
     // scene2light();
     OrbitControl();
 
-    Axes();
+    // Axes();
     MR();///////////////////////////场景默认值/////////////////////////////////
     WG_Ground();
+    KBcreate();
+    robotplane();
     // KB();//数据看板
     // OutlinePass();
     console.log(_TJS.scene.children);
@@ -40,18 +47,28 @@ function init() {
     // console.log(_Global.KZTtz,"ssss");
     console.log(_TJS.camera.position, "Newcamera");
     window.addEventListener('resize', event_Mg.WindowResize);
+
     // console.log(_Global.linectro,"线段控制");
 };
 
 ////////////////场景默认值////////////////////
 function MR() {
+    ///////////////////////////看板内容实时更新////////////////////////////////
+    // _Global.neirong = "创建看板内容";
+
+
 
     _Global.opendoor = false;
+    _Global.flyyer = false;
+    _Global.buttondown = 0;
+    _Global.movestart = 0;
 
 
 }
-
-
+///////////////////////场景动画////////////
+function mixer() {
+    _Global.mixer = new THREE.AnimationMixer();
+}
 
 
 
@@ -85,7 +102,7 @@ function initScene() {
 
 ///////////////////初始化相机/////////////////////////////
 function Camera() {
-    _TJS.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100000);
+    _TJS.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.01, 100000);
     _TJS.camera.position.set(83, 46, -101);
     // _TJS.camera.lookAt(10000, 10, 10);
 }
@@ -93,6 +110,10 @@ function Camera() {
 //////////////////////初始化控件对象////////////////////
 function OrbitControl() {
     _TJS.orbitControls = new OrbitControls(_TJS.camera, _TJS.renderer.domElement);
+    // _TJS.orbitControls.minDistance = 0.001;
+    _TJS.orbitControls.maxDistance = 150;
+    _TJS.orbitControls.maxPolarAngle = 0.48 * Math.PI;
+
 }
 ////////////////////////////帧率显示////////////////////////////
 
